@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: guilherme10!
+      POSTGRES_DB: projetonest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+  app:
+    build: .
+    image: api-projetonest
+    container_name: nest-app
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres-db
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: guilherme10!
+      DATABASE_NAME: projetonest
+      PROFILES_ACTIVE: docker
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+
+  pgadmin:
+    image: gui2310g/pgadmin
+    container_name: my-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "15432:80"
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+
+volumes:
+  postgres-data:
+
+networks:
+  my-network:
+    driver: bridge
