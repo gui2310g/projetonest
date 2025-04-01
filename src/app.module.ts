@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
+import configuration from './presentation/config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './domain/user/user.module';
+import { UserController } from './domain/user/user.controller';
+import { User } from './domain/user/User.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,16 +13,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DATABASE_HOST || 'localhost', 
+      host: process.env.DATABASE_HOST || 'localhost',
       port: parseInt(process.env.DATABASE_PORT || '5432', 10),
       username: process.env.DATABASE_USER || 'postgres',
       password: process.env.DATABASE_PASSWORD || 'guilherme10!',
       database: process.env.DATABASE_NAME || 'projetonest',
-      entities: [],
+      entities: [User],
       synchronize: true,
     }),
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [UserController],
 })
 export class AppModule {}

@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: gui2310g/postgres
     container_name: postgres-db
     restart: always
     environment:
@@ -28,9 +28,13 @@ services:
       DATABASE_NAME: projetonest
       PROFILES_ACTIVE: docker
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
+    volumes:
+      - .:/src
+      - /src/node_modules
     networks:
       - my-network
+    command: npm run start:dev 
 
   pgadmin:
     image: gui2310g/pgadmin
