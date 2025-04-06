@@ -6,6 +6,7 @@ export enum UserRole {
 }
 
 @Entity("users")
+@Unique(["email"])
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,7 +15,6 @@ export class User {
     nome: string;
 
     @Column({nullable: false})
-    @Unique(["email"])
     email: string
 
     @Column({nullable: false})
