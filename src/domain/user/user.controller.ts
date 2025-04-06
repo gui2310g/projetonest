@@ -1,20 +1,21 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { User } from './User.entity';
-import { UserRequestDto, UserResponseDto } from 'src/application/users/user.dto';
+import { UserDetailsDto } from 'src/application/dto/users/user-details.dto';
+import { UserRequestDto } from 'src/application/dto/users/user-request.dto';
+import { UserResponseDto } from 'src/application/dto/users/user-response.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
+  findAll(): Promise<UserDetailsDto[]> {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<User | null> {
-    return this.userService.findById(Number(id));
+  findOne(@Param('id') id: number): Promise<UserDetailsDto | null> {
+    return this.userService.findById(id);
   }
 
   @Post()
@@ -24,11 +25,11 @@ export class UserController {
 
   @Put(':id')
   update(@Param('id') id: number, @Body() user: UserRequestDto): Promise<UserResponseDto | null> {
-    return this.userService.update(Number(id), user);
+    return this.userService.update(id, user);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number): Promise<void> {
-    return this.userService.delete(Number(id));
+    return this.userService.delete(id);
   }
 }
