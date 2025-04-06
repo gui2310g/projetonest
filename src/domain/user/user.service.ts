@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { UserDetailsDto } from 'src/application/dto/users/user-details.dto';
 import { UserRequestDto } from 'src/application/dto/users/user-request.dto';
 import { UserResponseDto } from 'src/application/dto/users/user-response.dto';
-import { toUserDetailsDto } from 'src/application/mappers/user.mapper';
+import { toUserDetailsDto, toUserResponseDTO } from 'src/application/mappers/user.mapper';
 
 @Injectable()
 export class UserService {
@@ -33,14 +33,7 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(newUser);
 
-    return {
-      id: savedUser.id,
-      nome: savedUser.nome,
-      email: savedUser.email,
-      senha: savedUser.senha,
-      role: UserRole.USER,
-      createdAt: savedUser.createdAt,
-    };
+    return toUserResponseDTO(savedUser);
   }
 
   async findAll(): Promise<UserDetailsDto[]> {
@@ -65,8 +58,6 @@ export class UserService {
   }
 
   async update(id: number, user: UserRequestDto): Promise<UserResponseDto | null> {
-    await this.findById(id);
-
     if (await this.isAdmin(id)) throw new BadRequestException('Não se pode atualizar o admin');
 
     if (user.senha) user.senha = await bcrypt.hash(user.senha, this.saltOrRounds);
@@ -75,16 +66,9 @@ export class UserService {
 
     const updatedUser = await this.userRepository.findOne({ where: { id } });
 
-    if (!updatedUser) throw new NotFoundException('Erro ao atualizar o usuário');
+    if (!updatedUser) throw new NotFoundException('Não foi encontrado usuario com id: ' + id);
 
-    return {
-      id: updatedUser.id,
-      nome: updatedUser.nome,
-      email: updatedUser.email,
-      senha: updatedUser.senha,
-      role: UserRole.USER,
-      createdAt: updatedUser.createdAt,
-    };
+    return toUserResponseDTO(updatedUser);
   }
 
   async delete(id: number): Promise<void> {
