@@ -5,7 +5,7 @@ import { User } from "src/domain/user/User.entity";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+  constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
     
-    validate(payload: User) {
-        return { userId: payload.id, username: payload.nome };
-    }
+  validate(payload: User) {
+    return { userId: payload.id, username: payload.nome };
+  }
 }

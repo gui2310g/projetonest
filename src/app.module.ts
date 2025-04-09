@@ -23,7 +23,7 @@ import { AuthModule } from './domain/auth/auth.module';
       synchronize: true,
     }),
     UserModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [UserController],
 })
