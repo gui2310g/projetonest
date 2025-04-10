@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/domain/user/user.service';
 import * as bcrypt from 'bcrypt';
 
-
 @Injectable()
 export class AuthService {
     constructor(private userService: UserService, private jwtService: JwtService) {}
@@ -14,7 +13,7 @@ export class AuthService {
       if (!user || !(await bcrypt.compare(password, user.senha))) 
         throw new UnauthorizedException('Usuário ou senha inválido');
       
-      const payload = { sub: user.id, username: user.email };
+      const payload = { sub: user.id, username: user.email, role: user.role };
 
       return { token: await this.jwtService.signAsync(payload) };
     }

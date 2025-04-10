@@ -5,7 +5,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Request } from 'express';
 
 interface AuthenticatedRequest extends Request {
-  user: { roles: UserRole[] };
+  user: { role: UserRole };
 }
 
 @Injectable()
@@ -19,6 +19,6 @@ export class RolesGuard implements CanActivate {
     ]);
 
     const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    return requiredRoles.some((role) => user?.roles?.includes(role));
+    return requiredRoles.includes(user?.role);
   }
 }
