@@ -28,7 +28,10 @@ export class CategoryService {
   }
 
   async findAll(pagination: PaginationDto): Promise<PaginatedResponse<CategoryResponseDto[]>> {
-    const paginatedResult = await paginate<Category>(this.categoryRepository, pagination);
+    const paginatedResult = await paginate<Category>(this.categoryRepository, pagination, {
+      relations: ['produtos'],
+    });
+
     const { data: categories } = paginatedResult;
 
     if (categories.length === 0) throw new NotFoundException('Não há categorias');
@@ -43,7 +46,10 @@ export class CategoryService {
   }
 
   async findOne(id: number): Promise<CategoryResponseDto> {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+    const category = await this.categoryRepository.findOne(
+      { where: { id }, 
+      relations: ['produtos'] }
+    );
 
     if (!category) throw new NotFoundException('Não foi encontrado categoria com id: ' + id);
 
@@ -61,7 +67,16 @@ export class CategoryService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.findOne(id);
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: ['produtos'], 
+    });
+  
+    if (!category) throw new NotFoundException('Não foi encontrado categoria com id: ' + id);
+    
+    if (category.produtos && category.produtos.length > 0) 
+      throw new ConflictException('Não é possível excluir categoria com produtos associados.');
+    
     await this.categoryRepository.delete(id);
   }
 
