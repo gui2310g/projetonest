@@ -9,6 +9,9 @@ import { AuthModule } from './domain/auth/auth.module';
 import { CategoryModule } from './domain/category/category.module';
 import { CategoryController } from './domain/category/category.controller';
 import { Category } from './domain/category/category.entity';
+import { ProductModule } from './domain/product/product.module';
+import { Product } from './domain/product/product.entity';
+import { ProductController } from './domain/product/product.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,13 +25,14 @@ import { Category } from './domain/category/category.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Category],
+      entities: [User, Category, Product],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
     CategoryModule,
+    ProductModule
   ],
-  controllers: [UserController, CategoryController],
+  controllers: [UserController, CategoryController, ProductController],
 })
 export class AppModule {}
